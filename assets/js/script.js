@@ -13,7 +13,7 @@ function callTranslator() {
 
             if (isDetectLang) { //언어 감지
                 $.ajax({
-                    url: 'http://localhost:3000/detectLangs?text=' + query,
+                    url: 'https://translator-api.vercel.app/detectLangs?text=' + query,
                     type: 'GET',
                     success: function (res) {
                         sourceLang = res.langCode;
@@ -49,7 +49,7 @@ function reTranslator() {
         if (query.length < 1000) {
             //ajaax
             $.ajax({
-                url: 'http://localhost:3000/papago?source=' + targetLang + '&target=' + sourceLang + '&text=' + query,
+                url: 'https://translator-api.vercel.app/papago?source=' + targetLang + '&target=' + sourceLang + '&text=' + query,
                 type: 'GET',
                 success: function (res) {
                     $('#reverse_result').html(res.message.result.translatedText.toString().replaceAll('\\r\\n', '<br>').replaceAll('\n', '<br>'));
@@ -76,7 +76,7 @@ function papagoApi(query) {
         $('#target-lang #ko').addClass('active');
     }
     $.ajax({
-        url: 'http://localhost:3000/papago?source=' + sourceLang + '&target=' + targetLang + '&text=' + query,
+        url: 'https://translator-api.vercel.app/papago?source=' + sourceLang + '&target=' + targetLang + '&text=' + query,
         type: 'GET',
         success: function (res) {
             $('#result_translation').html(res.message.result.translatedText.toString().replaceAll('\\r\\n', '<br>').replaceAll('\n', '<br>'));
