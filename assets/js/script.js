@@ -38,7 +38,6 @@ function callTranslator() {
         $('#result_translation_kakao').text('')
         $('#autoLang').text('언어감지');
     }
-    $('#result_translation').height(1).height($('#result_translation').prop('scrollHeight'));
     return true;
 }
 
@@ -79,8 +78,10 @@ function papagoApi(query) {
         url: 'https://translator-api.vercel.app/papago?source=' + sourceLang + '&target=' + targetLang + '&text=' + query,
         type: 'GET',
         success: function (res) {
-            $('#result_translation').html(res.message.result.translatedText.toString().replaceAll('\\r\\n', '<br>').replaceAll('\n', '<br>'));
+            $('#result_translation').html(res.message.result.translatedText.toString().replaceAll('\\r\\n', '\n'));
             reTranslator();
+            $('#result_translation').height(1).height($('#result_translation').prop('scrollHeight'));
+
         }
     });
 }
@@ -94,8 +95,10 @@ function kakaoTranslate(str) {
             headers: { "Authorization": "KakaoAK 9c593e2ec73a545b0cd0d67a61a8e599" },
             data: '{}',
             success: function (data) {
-                resolve(data.translated_text[0][0]);
-                $('#result_translation_kakao').html(data.translated_text[0][0]);
+                $('#result_translation_kakao').html('');
+                for (var i = 0; i < data.translated_text[0].length; i++) {
+                    $('#result_translation_kakao').append(data.translated_text[0][i] + '\n');
+                }
                 reTranslatorKakao();
                 $('#result_translation_kakao').height(1).height($('#result_translation_kakao').prop('scrollHeight'));
 
@@ -109,7 +112,7 @@ function kakaoTranslate(str) {
 }
 
 function reTranslatorKakao() {
-    var str = $('#result_translation_kakao').val().replace('\n', '%0A');
+    var str = $('#result_translation_kakao').val().replace('\n', '%20');
     if (str.length > 0) { //빈칸 확인
         if (str.length < 1000) {
             return new Promise(function (resolve, reject) {
@@ -120,8 +123,10 @@ function reTranslatorKakao() {
                     headers: { "Authorization": "KakaoAK 9c593e2ec73a545b0cd0d67a61a8e599" },
                     data: '{}',
                     success: function (data) {
-                        resolve(data.translated_text[0][0]);
-                        $('#reverse_result_kakao').html((data.translated_text[0][0]).replaceAll('\n', '<br>'));
+                        $('#reverse_result_kakao').html('');
+                        for (var i = 0; i < data.translated_text[0].length; i++) {
+                            $('#reverse_result_kakao').append(data.translated_text[0][i] + '<br>');
+                        }
                     },
                     error: function (xhr, ajaxOptions, throwError) {
                         reject(throwError);
