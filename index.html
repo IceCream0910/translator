@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>번역기</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</head>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <h2>번역기</h2>
+        </header>
+        <div id="transExForm" name="transExForm">
+            <div class="source-container">
+                <div class="select-lang" id="source-lang">
+                    <h3 class="source-lang-btn active" id="autoLang">언어감지</h3>
+                    <h3 class="source-lang-btn" id="ko">한국어</h3>
+                    <h3 class="source-lang-btn" id="en">영어</h3>
+                </div>
+                <textarea id="query" name="query" cols="80"></textarea>
+                <button id="trans-btn" onClick="callTranslator()">
+                    <ion-icon name="arrow-forward-outline"></ion-icon>
+                </button>
+
+                <button id="trans-btn-mb" onClick="callTranslator()">
+                    번역&nbsp;<ion-icon name="earth-outline"></ion-icon>
+                </button>
+            </div>
+
+            <div class="result-container">
+                <div class="select-lang" id="target-lang">
+                    <h3 class="target-lang-btn" id="ko">한국어</h3>
+                    <h3 class="target-lang-btn active" id="en">영어</h3>
+                </div>
+                <div id="papago">
+                    <div class="engine-header">
+                        <a href="https://papago.naver.com" target="_blank"><img id="engine-logo"
+                                src="assets/img/papago.png"> </a><span>Papago</span>
+                    </div>
+                    <textarea id="result_translation" disabled name="result_translation" cols="80" rows="2"></textarea>
+                    <div class="reverse_result">
+                        <span style="color:#6d6d6d;font-size:14px;">역번역 결과
+                            <span tooltip="번역 결과를 처음 입력한 언어로 다시 번역합니다. 의도한 의미대로 번역되었는지 다시 확인해보세요."
+                                style="text-decoration:none;color:#6d6d6d;">
+                                <ion-icon name="help-circle-outline">
+                                </ion-icon>
+                            </span>
+                        </span><br>
+                        <p style="color:#474747;" id="reverse_result"></p>
+                    </div>
+                </div>
+
+                <div id="kakao">
+                    <div class="engine-header">
+                        <a href="https://translate.kakao.com" target="_blank"><img id="engine-logo"
+                                src="assets/img/kakao.png"></a><span>kakao i 번역</span>
+                    </div>
+                    <textarea id="result_translation_kakao" disabled name="result_translation" cols="80"
+                        rows="2"></textarea>
+                    <div class="reverse_result">
+                        <span style="color:#6d6d6d;font-size:14px;">역번역 결과
+                            <span tooltip="번역 결과를 처음 입력한 언어로 다시 번역합니다. 의도한 의미대로 번역되었는지 다시 확인해보세요."
+                                style="text-decoration:none;color:#6d6d6d;">
+                                <ion-icon name="help-circle-outline">
+                                </ion-icon>
+                            </span>
+                        </span><br>
+                        <p style="color:#474747;" id="reverse_result_kakao"></p>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2022. All rights reserved <a href="https://icecream0910.github.io/" target="_blank">Yun Taein(@Ice
+                Cream)</a>.</p>
+    </footer>
+
+</body>
+<script src="assets/js/script.js"></script>
+<script>
+
+    $("#query").keypress(function (e) {
+        if (e.which === 13 && !e.shiftKey) {
+            callTranslator();
+            kakaoTranslate();
+        }
+    });
+
+    $("textarea").on("propertychange change keyup paste input", function () {
+        if ($(this).val() == '') {
+            console.log("empty");
+            $('#result_translation').text('');
+            $('#result_translation_kakao').text('');
+            $('#reverse_result').text('');
+            $('#reverse_result_kakao').text('');
+            $('#autoLang').text('언어감지');
+        }
+        $(this).height(1).height($(this).prop('scrollHeight'));
+
+        var length = $(this).val().length; /*입력값 받아오기*/
+        if (length <= 6 && length >= 0) {
+            $("textarea").css("font-size", '30px');
+        } else if (length > 30 && length <= 60) {
+            $("textarea").css("font-size", '26px');
+        }
+        else if (length > 60 && length <= 120) {
+            $("textarea").css('font-size', '23px');
+        }
+        else if (length > 120) {
+            $("textarea").css('font-size', '18px');
+        }
+    });
+
+    //class named 'lang-btn' onclick event
+    $(".source-lang-btn").click(function () {
+        if ($(this).attr('id') == 'autoLang') {
+            $('#autoLang').text('언어감지');
+            $('#autoLang').addClass('active');
+            $('#ko').removeClass('active');
+            $('#en').removeClass('active');
+            isDetectLang = true;
+        } else {
+            sourceLang = $(this).attr('id');
+            isDetectLang = false;
+        }
+
+        $(".source-lang-btn").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $(".target-lang-btn").click(function () {
+        targetLang = $(this).attr('id');
+        $(".target-lang-btn").removeClass("active");
+        $(this).addClass("active");
+    });
+
+</script>
+
+</html>
